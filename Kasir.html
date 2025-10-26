@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Website Kasir</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo">
+          <img src="Raos.png" alt="Logo" />
+          <h1>AYAM GEPUK RAOS</h1>
+        </div>
+        <div class="date">
+          <p id="currentDate"></p>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <div class="menu">
+          <h3>DAFTAR MENU</h3>
+          <ul id="menuList">
+          </ul>
+        </div>
+
+        <div class="summary">
+          <div class="summary-box">
+            <p>Total Item: <span id="totalItems">0</span></p>
+            <p>Total Harga: Rp <span id="totalPrice">0</span></p>
+          </div>
+
+          <div class="order-type">
+            <p>Pilih Jenis Pesanan:</p>
+            <label>
+              <input type="radio" name="orderType" value="dineIn" id="dineIn" checked />
+              Dine In
+            </label>
+            <label>
+              <input type="radio" name="orderType" value="takeAway" id="takeAway" />
+              Take Away
+            </label>
+          </div>
+
+          <button id="printReceipt" onclick="printReceipt()">CETAK STRUK</button>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
