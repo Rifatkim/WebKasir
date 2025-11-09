@@ -1,0 +1,140 @@
+.summary {
+  flex: 0 0 360px; /* lebar tetap */
+  width: auto;
+  background-color: white;
+  padding: 25px 30px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  font-family: "Poppins", sans-serif;
+  color: #475569;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.summary h3 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+/* List order items */
+.summary ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.summary ul li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px dotted #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.summary ul li:last-child {
+  border-bottom: none;
+}
+
+.summary ul li > span:first-child {
+  font-weight: 600;
+  color: #334155;
+}
+
+.summary ul li > span.quantity {
+  font-weight: 400;
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-left: 5px;
+}
+
+.summary ul li > span.price {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Total section */
+.summary .total-line {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.summary .total-line.total strong {
+  font-size: 1.2rem;
+}
+
+.summary .total-line.total {
+  border-top: 2px solid #e2e8f0;
+  padding-top: 12px;
+  margin-top: 25px;
+  color: #0f172a;
+}
+
+/* --- Order Type Radio --- */
+.order-type {
+  margin: 25px 0 20px 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.order-type label {
+  margin-right: 20px;
+  cursor: pointer;
+  position: relative;
+  padding-left: 28px;
+  color: #475569;
+  font-weight: 600;
+  user-select: none;
+}
+
+.order-type input[type="radio"] {
+  display: none;
+}
+
+.order-type label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #cbd5e1;
+  border-radius: 50%;
+  background: white;
+  box-sizing: border-box;
+  transition: 0.3s;
+}
+
+.order-type input[type="radio"]:checked + label::before {
+  background-color: #334155;
+  border-color: #334155;
+}
+
+.order-type label:hover::before {
+  border-color: #475569;
+}
+
+/* --- Checkout Button --- */
+#checkoutBtn {
+  background-color: #0f172a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+#checkoutBtn:hover {
+  background-color: #1e293b;
+}

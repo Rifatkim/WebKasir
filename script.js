@@ -1,16 +1,75 @@
+function showSignupForm() {
+  document.getElementById("form-title").textContent = "BUAT AKUN BARU";
+  document.getElementById("loginForm").style.display = "none";
+  document.getElementById("signupForm").style.display = "block";
+  document.getElementById("create-account-link").style.display = "none";
+  document.getElementById("back-to-login").style.display = "block";
+}
+
+function showLoginForm() {
+  document.getElementById("form-title").textContent = "LOGIN KASIR";
+  document.getElementById("loginForm").style.display = "block";
+  document.getElementById("signupForm").style.display = "none";
+  document.getElementById("create-account-link").style.display = "block";
+  document.getElementById("back-to-login").style.display = "none";
+}
+
+// === LOGIN (kirim ke backend Express/MySQL) ===
 function validateLogin(event) {
   event.preventDefault();
 
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  if (username === "admin" && password === "12345") {
-    window.location.href = "Kasir.html";
-  } else {
-    document.getElementById("error-message").style.display = "block";
-  }
+  fetch("http://localhost:3000/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.message === "Login berhasil") {
+        alert("Login Berhasil!");
+        window.location.href = "Kasir.html"; // Arahkan ke halaman kasir
+      } else {
+        document.getElementById("error-message").style.display = "block";
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Gagal terhubung ke server!");
+    });
 }
 
+// === REGISTRASI (kirim ke backend Express/MySQL) ===
+function validateSignup(event) {
+  event.preventDefault();
+
+  let newUsername = document.getElementById("newUsername").value;
+  let newPassword = document.getElementById("newPassword").value;
+
+  fetch("http://localhost:3000/api/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: newUsername,
+      password: newPassword,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      alert(data.message);
+      if (data.message === "Akun berhasil dibuat") {
+        showLoginForm();
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Gagal membuat akun, periksa koneksi server.");
+    });
+}
+
+// === BAGIAN MENU (tidak diubah) ===
 const menuItems = [
   { name: "Ayam Dada", price: 16000, quantity: 0 },
   { name: "Ayam Paha", price: 16000, quantity: 0 },
@@ -46,60 +105,50 @@ function updateSummary() {
   totalPriceElement.textContent = totalPrice;
 }
 
-function getOrderType() {
-  const orderType = document.querySelector(
-    'input[name="orderType"]:checked'
-  ).value;
-  return orderType;
+function addMenuItem() {
+  const itemName = prompt("Masukkan nama item menu:");
+  const itemPrice = parseInt(prompt("Masukkan harga item menu:"));
+
+  if (itemName && !isNaN(itemPrice) && itemPrice > 0) {
+    const newItem = { name: itemName, price: itemPrice, quantity: 0 };
+    menuItems.push(newItem);
+    renderMenu();
+  } else {
+    alert("Input tidak valid! Pastikan nama dan harga item benar.");
+  }
 }
 
-function printReceipt() {
-  const orderType = getOrderType(); 
+function editMenuItem(index) {
+  const newName = prompt(
+    "Masukkan nama baru item menu:",
+    menuItems[index].name
+  );
+  const newPrice = parseInt(
+    prompt("Masukkan harga baru item menu:", menuItems[index].price)
+  );
 
-  const receiptContent = `
-    <h1>Struk Pembelian</h1>
-    <p>Jenis Pesanan: ${orderType === "dineIn" ? "Dine In" : "Take Away"}</p>
-    <p>Menu Pesanan:</p>
-    <ul>
-        ${menuItems
-          .filter((item) => item.quantity > 0)
-          .map(
-            (item) =>
-              `<li>${item.name}: ${item.quantity} x Rp. ${item.price} = Rp. ${
-                item.quantity * item.price
-              }</li>`
-          )
-          .join("")}
-    </ul>
-    <p>Total Item: ${totalItems}</p>
-    <p>Total Harga: Rp. ${totalPrice}</p>
-  `;
-  const win = window.open("", "", "height=500,width=500");
-  win.document.write(receiptContent);
-  win.document.close();
-  win.print();
+  if (newName && !isNaN(newPrice) && newPrice > 0) {
+    menuItems[index].name = newName;
+    menuItems[index].price = newPrice;
+    renderMenu();
+  } else {
+    alert("Input tidak valid!");
+  }
 }
 
-function createMenu() {
-  menuItems.forEach((item, index) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-            <span>${item.name} - Rp. ${item.price}</span>
-            <button onclick="updateQuantity(${index}, -1)">-</button>
-            <span id="quantity${index}">${item.quantity}</span>
-            <button onclick="updateQuantity(${index}, 1)">+</button>
-        `;
-    menuList.appendChild(li);
-  });
+function deleteMenuItem(index) {
+  if (
+    confirm(`Apakah Anda yakin ingin menghapus menu ${menuItems[index].name}?`)
+  ) {
+    menuItems.splice(index, 1);
+    renderMenu();
+  }
 }
 
 function updateQuantity(index, delta) {
   const item = menuItems[index];
   const quantityElement = document.getElementById(`quantity${index}`);
-
-  // Update quantity
   item.quantity = Math.max(0, (item.quantity || 0) + delta);
-
   quantityElement.textContent = item.quantity;
 
   totalItems = menuItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -110,7 +159,26 @@ function updateQuantity(index, delta) {
   updateSummary();
 }
 
-document.getElementById("currentDate").textContent =
-  new Date().toLocaleDateString();
+function renderMenu() {
+  if (!menuList) return;
+  menuList.innerHTML = "";
+  menuItems.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span>${item.name} - Rp. ${item.price}</span>
+      <button onclick="updateQuantity(${index}, -1)">-</button>
+      <span id="quantity${index}">${item.quantity}</span>
+      <button onclick="updateQuantity(${index}, 1)">+</button>
+      <button onclick="editMenuItem(${index})"><i class="fas fa-pencil-alt"></i></button>
+      <button onclick="deleteMenuItem(${index})"><i class="fas fa-trash"></i></button>
+    `;
+    menuList.appendChild(li);
+  });
+}
 
-createMenu();
+// Menampilkan tanggal saat ini
+const dateEl = document.getElementById("currentDate");
+if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
+
+// Panggil renderMenu agar menu tampil
+renderMenu();

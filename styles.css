@@ -1,63 +1,51 @@
+/* --- Header --- */
 header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #c03905;
-  padding: 20px 40px;
+  background-color: #0f172a; /* Warna navy gelap */
+  padding: 10px 20px;
   color: white;
-  border-bottom: 10px solid #a32d04;
-  border: 6px solid #111;
-  font-family: "Montserrat", Arial, sans-serif;
+  font-family: "Poppins", sans-serif;
   width: 100%;
   box-sizing: border-box;
+  font-weight: 600;
+  font-size: 1rem;
+  height: 64px;
 }
 
-header .logo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-header .logo img {
-  order: 2;
-  width: 200px;
-  height: auto;
-  margin-left: 20px;
-  margin-right: 0;
-}
-
-header h1 {
-  order: 1;
-  font-size: 50px;
-  font-weight: bold;
-  margin: 0;
-  font-family: "Montserrat", Arial, sans-serif;
-}
-
-#currentDate {
-  font-size: 20px; 
-  font-weight: bold;
-}
-
+/* --- Container --- */
 .container {
   display: flex;
-  flex-direction: column; 
-  align-items: stretch;  
-  justify-content: flex-start;
-  gap: 20px; 
+  gap: 30px;
   width: 100%;
-  position: relative;
+  padding: 30px;
+  padding-top: calc(30px + 64px); /* agar tidak tertutup header fixed */
   box-sizing: border-box;
-  padding: 20px 0;
+  background-color: #f8fafc;
 }
+
+/* Wrapper untuk main konten agar container bisa fleksibel */
+.main-content {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* --- Menu Section --- */
 .menu {
   background-color: white;
   margin-top: 20px;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   font-family: "Montserrat", Arial, sans-serif;
-  width: 70%; 
+  width: 70%;
 }
 
 .menu h3 {
@@ -77,7 +65,7 @@ header h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0;
+  padding: 25px 0;
   border-bottom: 1px solid #ddd;
   white-space: nowrap;
 }
@@ -90,26 +78,36 @@ header h1 {
   white-space: nowrap;
   width: 100%;
 }
+.menu button i {
+  font-size: 14px;
+  vertical-align: middle;
+  line-height: 1;
+}
 
+.menu button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
 .menu li button,
 .menu-btn {
   padding: 4px 8px;
   font-size: 22px;
   cursor: pointer;
   border: none;
-  background-color: #c03905;
+  background-color: #0f172a;
   color: #ffffff;
   border-radius: 50%;
   width: 32px;
   height: 32px;
   font-weight: bold;
-  margin: 0 5px;
   transition: background-color 0.3s;
 }
 
 .menu li button:hover,
 .menu-btn:hover {
-  background-color: #a32d04;
+  background-color: #0f172a;
 }
 
 .menu li span {
@@ -120,108 +118,182 @@ header h1 {
 }
 
 .menu li .quantity-control {
+  margin-left: 10px;
   display: flex;
+  gap: 20px;
   align-items: center;
 }
 
 .menu li .quantity-control button {
-  margin: 0 5px;
+  margin: 10px;
   font-family: "Montserrat", Arial, sans-serif;
 }
-
-.summary {
-  display: flex;            
-  flex-direction: column;
-  gap: 10px;               
-  background-color: white;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 25%;
-  margin-left: 0; 
-  margin-top: 0;
-  align-self: flex-start; 
-}
-.summary-box {
-  background: #c03905;
-  color: white;
-  padding: 25px 30px;
-  border: 6px solid #111;
-  font-size: 26px;
-  font-weight: bold;
-  margin-bottom: 20px;
+.menu > button {
+  background: #0f172a; /* gelap */
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 800;
   width: 100%;
-  box-sizing: border-box;
-  text-align: left;
-  font-family: "Montserrat", Arial, sans-serif;
-}
-
-#printReceipt,
-.print-btn {
-  margin-top: 0;
-  padding: 12px 0;
-  background-color: #c03905;
-  color: white;
-  border: 6px solid #111;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
   cursor: pointer;
-  font-size: 32px;
-  border-radius: 0;
-  width: 100%;
-  font-weight: bold;
-  transition: background-color 0.3s;
+  transition: transform 0.08s ease, box-shadow 0.12s ease;
 }
 
-#printReceipt:hover,
-.print-btn:hover {
-  background-color: hwb(15 2% 36%);
-}
-
-.order-type {
-  background-color: #c03905;
-  padding: 20px;
-  margin-top: 20px;
-  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+/* --- Order Summary --- */
+.summary {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.04);
   font-family: "Montserrat", Arial, sans-serif;
-  border: 6px solid #111;
+  color: #0f172a;
+}
+
+/* Judul ringkas (jika ada) */
+.summary h3,
+.summary .title {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Daftar order — gunakan ul/ol atau elemen blok yang dihasilkan JS */
+.summary .order-list,
+.summary ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.summary .order-list li,
+.summary ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Nama item kiri, harga kanan */
+.summary .order-list li .item-name,
+.summary ul li .item-name {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* qty kecil di bawah nama atau sebelah nama */
+.summary .order-list li .item-qty,
+.summary ul li .item-qty {
+  display: block;
+  font-size: 12px;
+  color: #94a3b8; /* muted */
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Harga rata kanan */
+.summary .order-list li .item-price,
+.summary ul li .item-price {
+  color: #0f172a;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Totals section */
+.summary .totals {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #eef2f7;
+}
+
+.summary .totals .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 15px;
+  color: #475569;
+}
+
+.summary .totals .row.total {
+  font-weight: 800;
+  font-size: 18px;
+  color: #0f172a;
+}
+
+/* Order-type card styling (radio group) */
+.order-type {
+  margin-top: 16px;
+  background: transparent; /* keep existing look but tidy */
+  padding: 0;
+  border: none;
+  box-shadow: none;
 }
 
 .order-type p {
-  font-size: 26px;
-  font-weight: bold;
-  color: #ffffff;
-  margin-bottom: 15px;
-  font-family: "Montserrat", Arial, sans-serif;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+/* Radio labels as pill buttons */
+.order-type .radio-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
 .order-type label {
-  font-size: 22px;
-  margin-right: 20px;
-  cursor: pointer;
-  font-family: "Montserrat", Arial, sans-serif;
   display: inline-flex;
   align-items: center;
-  padding: 8px 15px;
-  background-color: #c03905;
-  border-radius: 5px;
-  transition: all 0.3s ease;
-  font-weight: bold;
-  color: #ffffff;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #ffffff;
+  border: 1px solid #eef2f7;
+  color: #0f172a;
+  font-weight: 600;
+  font-size: 14px;
 }
 
-.order-type label:hover {
-  background-color: #c03905;
-  color: rgb(0, 0, 0);
-}
-
+/* Larger visible radio */
 .order-type input[type="radio"] {
-  margin-right: 8px;
-  width: 18px;
-  height: 18px;
-  accent-color: #c03905;
+  width: 16px;
+  height: 16px;
+  accent-color: #0f172a;
 }
 
-.order-type input[type="radio"]:checked + label {
-  background-color: #c03905;
-  font-weight: bold;
+/* Checkout button — gelap, membulat, full width */
+#printReceipt {
+  background: #0f172a; /* gelap */
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 800;
+  width: 100%;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.12s ease;
+}
+
+#printReceipt:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.14);
+}
+
+/* kecilkan font pada .summary-box lama agar tidak mengganggu layout baru */
+.summary-box {
+  padding: 12px 14px;
+  font-size: 18px;
 }
 
 .main-content {
@@ -235,16 +307,22 @@ header h1 {
   padding: 0 20px;
 }
 
+/* --- Responsive Design --- */
 @media (max-width: 900px) {
   .container {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 0;
+    padding-top: 30px; /* header fixed kecil padding */
   }
-  .menu, .summary, .main-content {
-    width: 100%;
-  }
+
   .main-content {
     flex-direction: column;
+  }
+
+  .menu,
+  .summary {
+    padding: 14px;
+  }
+  #printReceipt {
+    font-size: 15px;
+    padding: 10px 14px;
   }
 }
