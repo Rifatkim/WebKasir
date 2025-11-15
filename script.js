@@ -1,75 +1,4 @@
-function showSignupForm() {
-  document.getElementById("form-title").textContent = "BUAT AKUN BARU";
-  document.getElementById("loginForm").style.display = "none";
-  document.getElementById("signupForm").style.display = "block";
-  document.getElementById("create-account-link").style.display = "none";
-  document.getElementById("back-to-login").style.display = "block";
-}
-
-function showLoginForm() {
-  document.getElementById("form-title").textContent = "LOGIN KASIR";
-  document.getElementById("loginForm").style.display = "block";
-  document.getElementById("signupForm").style.display = "none";
-  document.getElementById("create-account-link").style.display = "block";
-  document.getElementById("back-to-login").style.display = "none";
-}
-
-// === LOGIN (kirim ke backend Express/MySQL) ===
-function validateLogin(event) {
-  event.preventDefault();
-
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-
-  fetch("http://localhost:3000/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.message === "Login berhasil") {
-        alert("Login Berhasil!");
-        window.location.href = "Kasir.html"; // Arahkan ke halaman kasir
-      } else {
-        document.getElementById("error-message").style.display = "block";
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      alert("Gagal terhubung ke server!");
-    });
-}
-
-// === REGISTRASI (kirim ke backend Express/MySQL) ===
-function validateSignup(event) {
-  event.preventDefault();
-
-  let newUsername = document.getElementById("newUsername").value;
-  let newPassword = document.getElementById("newPassword").value;
-
-  fetch("http://localhost:3000/api/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: newUsername,
-      password: newPassword,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      alert(data.message);
-      if (data.message === "Akun berhasil dibuat") {
-        showLoginForm();
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      alert("Gagal membuat akun, periksa koneksi server.");
-    });
-}
-
-// === BAGIAN MENU (tidak diubah) ===
+// Data menu
 const menuItems = [
   { name: "Ayam Dada", price: 16000, quantity: 0 },
   { name: "Ayam Paha", price: 16000, quantity: 0 },
@@ -93,18 +22,62 @@ const menuItems = [
   { name: "Es Jeruk", price: 6000, quantity: 0 },
 ];
 
+// Menampilkan tanggal saat ini
+const dateEl = document.getElementById("currentDate");
+if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
+
+// Elemen untuk menampilkan menu
 const menuList = document.getElementById("menuList");
 const totalItemsElement = document.getElementById("totalItems");
 const totalPriceElement = document.getElementById("totalPrice");
 
+// Menambahkan variabel untuk nomor antrian
+let queueNumber = 1;
+
+// Menghitung total items dan total harga
 let totalItems = 0;
 let totalPrice = 0;
 
+// Fungsi untuk memperbarui ringkasan total
 function updateSummary() {
+  totalItems = menuItems.reduce((sum, item) => sum + item.quantity, 0);
+  totalPrice = menuItems.reduce(
+    (sum, item) => sum + item.quantity * item.price,
+    0
+  );
+
+  // Update tampilan total item dan harga
   totalItemsElement.textContent = totalItems;
-  totalPriceElement.textContent = totalPrice;
+  totalPriceElement.textContent = `Rp ${totalPrice.toLocaleString()}`;
+
+  // Update Order Summary
+  const summaryList = document.getElementById("summaryList");
+  summaryList.innerHTML = "";
+
+  menuItems.forEach((item) => {
+    if (item.quantity > 0) {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span class="item-name">${item.name}</span>
+        <span class="item-qty">x ${item.quantity}</span>
+        <span class="item-price">Rp ${item.price * item.quantity}</span>
+      `;
+      summaryList.appendChild(li);
+    }
+  });
+
+  // Update tampilan subtotal
+  const totalsBox = document.getElementById("totalsBox");
+  totalsBox.innerHTML = `
+    <div class="totals">
+      <div class="row total">
+        <span>Total</span>
+        <span>Rp ${totalPrice.toLocaleString()}</span>
+      </div>
+  `;
 }
 
+// Fungsi untuk menambah item menu baru
 function addMenuItem() {
   const itemName = prompt("Masukkan nama item menu:");
   const itemPrice = parseInt(prompt("Masukkan harga item menu:"));
@@ -118,6 +91,33 @@ function addMenuItem() {
   }
 }
 
+// Fungsi untuk merender menu
+function renderMenu() {
+  if (!menuList) return;
+  menuList.innerHTML = "";
+  menuItems.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span>${item.name} - Rp. ${item.price}</span>
+      <button onclick="updateQuantity(${index}, -1)">-</button>
+      <span id="quantity${index}">${item.quantity}</span>
+      <button onclick="updateQuantity(${index}, 1)">+</button>
+      <button onclick="editMenuItem(${index})"><i class="fas fa-pencil-alt"></i></button>
+      <button onclick="deleteMenuItem(${index})"><i class="fas fa-trash"></i></button>
+    `;
+    menuList.appendChild(li);
+  });
+}
+
+// Fungsi untuk memperbarui kuantitas item menu
+function updateQuantity(index, delta) {
+  const item = menuItems[index];
+  item.quantity = Math.max(0, (item.quantity || 0) + delta);
+  renderMenu(); // Memperbarui menu
+  updateSummary(); // Memperbarui order summary
+}
+
+// Fungsi untuk mengedit item menu
 function editMenuItem(index) {
   const newName = prompt(
     "Masukkan nama baru item menu:",
@@ -136,6 +136,7 @@ function editMenuItem(index) {
   }
 }
 
+// Fungsi untuk menghapus item menu
 function deleteMenuItem(index) {
   if (
     confirm(`Apakah Anda yakin ingin menghapus menu ${menuItems[index].name}?`)
@@ -145,40 +146,64 @@ function deleteMenuItem(index) {
   }
 }
 
-function updateQuantity(index, delta) {
-  const item = menuItems[index];
-  const quantityElement = document.getElementById(`quantity${index}`);
-  item.quantity = Math.max(0, (item.quantity || 0) + delta);
-  quantityElement.textContent = item.quantity;
+// Fungsi untuk menangani proses checkout dan menambah nomor antrian
+// Fungsi untuk mencetak struk
+function printReceipt() {
+  // Mendapatkan nomor antrian
+  const queueNumber = document.getElementById("queueNumber").textContent;
 
-  totalItems = menuItems.reduce((sum, item) => sum + item.quantity, 0);
-  totalPrice = menuItems.reduce(
-    (sum, item) => sum + item.quantity * item.price,
-    0
-  );
+  // Menampilkan informasi struk
+  const receipt = `
+    <pre>
+    Ayam Gepuk Raos
+    ----------------------------
+    Waktu Penjualan: ${new Date().toLocaleString()}
+    Nomor Antrian: ${queueNumber}
+
+    Item
+    ----------------------------
+    ${menuItems
+      .map((item) =>
+        item.quantity > 0
+          ? `${item.name} ${
+              item.quantity
+            } x ${item.price.toLocaleString()} = ${(
+              item.quantity * item.price
+            ).toLocaleString()}`
+          : ""
+      )
+      .join("\n")}
+
+    ----------------------------
+    Subtotal: Rp ${totalPrice.toLocaleString()}
+    Grand Total: Rp ${(totalPrice * 1.1).toLocaleString()}
+    Cash: Rp ${(totalPrice * 1.1).toLocaleString()}
+    Kembalian: Rp 0
+
+    ----------------------------
+    Selamat Menikmati
+    Powered by Tim Raos
+    </pre>
+  `;
+
+  // Membuka jendela baru untuk mencetak struk
+  const printWindow = window.open();
+  printWindow.document.write(`<pre>${receipt}</pre>`);
+  printWindow.document.close();
+  printWindow.print();
+
+  // Increment nomor antrian
+  queueNumber++;
+  document.getElementById("queueNumber").textContent = queueNumber;
+
+  // Reset kuantitas item menu setelah checkout
+  menuItems.forEach((item) => (item.quantity = 0));
+  renderMenu();
   updateSummary();
 }
 
-function renderMenu() {
-  if (!menuList) return;
-  menuList.innerHTML = "";
-  menuItems.forEach((item, index) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <span>${item.name} - Rp. ${item.price}</span>
-      <button onclick="updateQuantity(${index}, -1)">-</button>
-      <span id="quantity${index}">${item.quantity}</span>
-      <button onclick="updateQuantity(${index}, 1)">+</button>
-      <button onclick="editMenuItem(${index})"><i class="fas fa-pencil-alt"></i></button>
-      <button onclick="deleteMenuItem(${index})"><i class="fas fa-trash"></i></button>
-    `;
-    menuList.appendChild(li);
-  });
-}
-
-// Menampilkan tanggal saat ini
-const dateEl = document.getElementById("currentDate");
-if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
-
 // Panggil renderMenu agar menu tampil
 renderMenu();
+
+// Panggil updateSummary pertama kali
+updateSummary();

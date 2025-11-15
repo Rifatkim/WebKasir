@@ -9,49 +9,36 @@
   <body>
     <div class="login-container">
       <h2 id="form-title">LOGIN KASIR</h2>
-      
+
       <!-- Form Login -->
       <form id="loginForm" onsubmit="return validateLogin(event)">
         <div class="input-group">
           <label for="username">Username :</label>
-          <input type="text" id="username" placeholder="Masukkan username" required />
+          <input
+            type="text"
+            id="username"
+            placeholder="Masukkan username"
+            required
+          />
         </div>
         <div class="input-group">
           <label for="password">Password :</label>
-          <input type="password" id="password" placeholder="Masukkan password" required />
+          <input
+            type="password"
+            id="password"
+            placeholder="Masukkan password"
+            required
+          />
         </div>
         <button type="submit">Login</button>
       </form>
 
       <!-- Pesan Error Login -->
-      <p id="error-message" style="display: none; color: red;">
+      <p id="error-message" style="display: none; color: red">
         Username atau Password salah! Silakan coba lagi.
       </p>
-
-      <!-- Form Create Account -->
-      <form id="signupForm" style="display: none;" onsubmit="return validateSignup(event)">
-        <div class="input-group">
-          <label for="newUsername">Username Baru :</label>
-          <input type="text" id="newUsername" placeholder="Masukkan username baru" required />
-        </div>
-        <div class="input-group">
-          <label for="newPassword">Password Baru :</label>
-          <input type="password" id="newPassword" placeholder="Masukkan password baru" required />
-        </div>
-        <button type="submit">Buat Akun</button>
-      </form>
-
-      <!-- Link untuk buat akun -->
-      <p id="create-account-link">
-        Belum punya akun? <a href="javascript:void(0);" onclick="showSignupForm()">Buat Akun</a>
-      </p>
-      
-      <!-- Link untuk kembali ke login -->
-      <p id="back-to-login" style="display: none;">
-        Sudah punya akun? <a href="javascript:void(0);" onclick="showLoginForm()">Login</a>
-      </p>
     </div>
-    
+
     <script src="script.js"></script>
   </body>
 </html>
